@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "express": "^4.17.2",
-    "mariadb": "^2.5.5",
     "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.5.5"
   }
 }

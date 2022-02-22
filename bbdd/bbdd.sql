@@ -34,7 +34,7 @@ create table playing_words(
     fk_theme int,
     is_successful boolean,
     constraint FK_WORDS_PLAYING_WORDS foreign key(fk_word) references words(id),
-    constraint FK_USERS_PLAYING_WORDS foreign key(fk_user) references users(id),
+    constraint FK_USERS_PLAYING_WORDS foreign key(fk_user) references users(id) on delete cascade,
     constraint FK_THEME_PLAYING_WORDS foreign key(fk_theme) references themes(id),
     primary key(fk_word, fk_user)
 );
