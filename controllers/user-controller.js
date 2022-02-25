@@ -8,30 +8,36 @@ routes.post('/create-user', middlewares.validateUser, (req, res) => {
     user.password = security.cipher(user.password)
     console.log('password', user.password);
     bd.createUser(user)
-        .then(result => {
-            user = middlewares.createUserDto(user)
+        .then(insertId=> {
+            user = {...middlewares.createUserDto(user) }
             let token = security.createToken(user)
-            res.json({status:true, token: token})
+            let response = {status:true, data: {id: insertId, ...user, token}}
+            res.json(response)
         })
         .catch(err => {
+            console.log('mal', err);
             res.json(err)
         })
 })
 
 routes.post('/login',middlewares.validateLogin, (req,res)=>{
-    let  user = req.body
+    let user = req.body
     bd.getUser(user.email)
         .then(result=>{
-            hash = result.data.password || ''
-            console.log('hash', hash);
-            if (security.decipher(hash) == user.password){
-                middlewares.createUserDto(result.data)
-                let token = security.createToken(result.data[0])
-                result.data = {...result.data,token}
-                res.status(200).json(result);
-                return
+            if(result.data){
+                //console.log('RESULTADO', result, req.body, user);
+                hash = result.data.password || ''
+                if (security.decipher(hash) == user.password){
+                    middlewares.createUserDto(result.data)
+                    let token = security.createToken(result.data)
+                    result.data = {...result.data,token}
+                    res.status(200).json(result);
+                    return
+                }
+                res.status(400).json({status:false, msg:'Contraseña o correo incorrecto'})
+            }else{
+                res.status(200).json({status:false,msg:'No existe el usuario'})
             }
-            res.status(400).json({status:false, msg:'Contraseña o correo incorrecto'})
         })
         .catch(err=>{
             console.log(err);

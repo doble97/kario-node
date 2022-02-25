@@ -10,22 +10,38 @@ module.exports = {
     },
     validateLogin: (req, res, next) => {
         let user = req.body
-        // let token = req.headers.authorization.split(" ")[1];
-        // if (token) {
-        //     security.checkToken(token)
-        //         .then(result => {
-        //             res.locals.user = result
-
-        //         })
-        //         .catch(err => {
-        //             res.json(err)
-        //         })
-        // }
         if (!(user.email && user.password)) {
             return res.status(400).json({ status: false, msg: 'Error, faltan parametros' });
         }
         next()
 
+    },
+    validateToken: (req, res, next) => {
+        let token = req.headers.authorization
+        if (token) {
+            token = token.split(" ")[1]
+            security.checkToken(token)
+                .then(result => {
+                    res.locals.user = result
+                    console.log('RESULTA TOKEN-->',result);
+                    next()
+                })
+                .catch(err => {
+                    res.json('err')
+                })
+        }
+        else{
+            res.json({status:false, msg:'No se ha enviado el token'})
+        }
+    },
+    validateDeck: (req,res, next)=>{
+        let deck = req.body
+        if(deck.name && deck.fk_language){
+            res.locals.deck=deck
+            next()
+            return
+        }
+        res.status(200).json({status:false, msg:'Faltan parametros para crear la baraja'})
     },
     checkPass: (req, res, next) => {
         let user = req.body
@@ -44,6 +60,16 @@ module.exports = {
                 res.status(400).json(err)
             })
     },
+    validateDeleteDeck: (req,res,next)=>{
+        let data = {idUser:req.params.idUser, idDeck: req.query.idDeck}
+        if(!(data.idUser && data.idDeck)){
+
+        }
+    },
+
+
+
+
     createUserDto: (user) => {
         delete user.password
         return user

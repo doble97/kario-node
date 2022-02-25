@@ -1,15 +1,24 @@
 const express = require('express')
-const rutas = require('./controllers/user-controller')
-const routes_themes = require('./controllers/themes-controller')
+const rutas_user = require('./controllers/user-controller')
+const rutas_deck = require('./controllers/deck-controller')
 const app = express()
+const cors = require('cors')
+
+
 app.use(express.json())
+app.use(cors())
 app.use('/', (req, res, next)=>{
-    console.log('METHOD', req.method, '- URL', req.url, "- ADDRESS", req.hostname);
+    console.log(req.method, req.url, req.hostname);
     next()
 })
-app.use('/', rutas )
+app.use('/', rutas_user )
+app.use('/', rutas_deck )
 
-app.use('/vocabulary',routes_themes )
+app.use((error, req,res,next)=>{
+    let response = {status:false, msg:error.type, triggerError: error.body, urlError:req.url}
+    res.status(400).json(response)
+})
+
 app.listen(7777,()=>{
     console.log('Listening on port 7777..');
 })

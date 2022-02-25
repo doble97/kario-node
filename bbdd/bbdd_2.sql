@@ -11,12 +11,13 @@ create table users(
     password varchar(120) not null,
     name varchar(60) not null,
     surname varchar(60) not null, 
-    created_at date default now()
+    created_at datetime default now()
 );
 
 create table preferences(
     fk_user int,
     fk_language int,
+    learn_words int not null default 5,
     constraint FK_USER_REFERENCES foreign key(fk_user) references users(id),
     constraint FK_LANGUAGES_REFERENCES foreign key(fk_language) references languages(id),
     PRIMARY KEY(fk_user,fk_language)

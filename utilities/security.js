@@ -21,7 +21,6 @@ module.exports = {
         return data
     },
     createToken:(user)=>{
-        console.log('USER CREADO TOKEN: ', user);
         let payload = {
             ...user
         }
@@ -32,6 +31,7 @@ module.exports = {
         return new Promise((resolve,reject)=>{
             try{
                 let isValid = jwt.verify(token,SECURITY_SALT)
+                console.log('TOKEN VERIFY',isValid);
                 resolve({status:true, data:{...isValid}})
             }
             catch (error){

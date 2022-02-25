@@ -1,7 +1,4 @@
 ## Objetivos del proyecto
-- [x] Registro de usuarios
-- [] Validar la entrada de todos los campos del usuario
-- [] Devolver usuario
 
 1. Registro de usuarios
     - [x] Validar todos los campos estén incluidos

@@ -7,7 +7,8 @@ module.exports = {
                     let query = 'INSERT INTO users(email, password, name, surname, created_at) VALUES (?,?,?,?,now())'
                     conn.query(query, [user.email, user.password, user.name, user.surname])
                         .then(row => {
-                            resolve({ status: true, data: user })
+                            console.log('row ',row);
+                            resolve(row.insertId)
                         })
                         .catch(err => {
                             let { errno } = err
