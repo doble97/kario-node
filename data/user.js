@@ -13,7 +13,6 @@ module.exports = {
                         .catch(err => {
                             let { errno } = err
                             reject({ status: false, errno: errno, msg: errno == 1062 ? 'Usuario ya existe' : 'Error' })
-                            console.log('ERROR QUERY', err);
                         })
                     conn.release()
                 })
@@ -33,12 +32,12 @@ module.exports = {
                         })
                         .catch(err => {
                             console.log(err);
-                            reject({ status: false, msg: 'Error bbbdd' })
+                            reject('Error query' )
                         })
                     conn.release();
                 })
                 .catch(err => {
-                    reject({ status: false, msg: 'Error de conexion' })
+                    reject('Error de conexion')
                 })
         })
     },

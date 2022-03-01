@@ -1,4 +1,6 @@
 const bd = require('../data/user')
+const Custom_Exception = require('../exceptions/custon_Exception')
+const ResponseToSend = require('../response/response')
 const middlewares = require('../utilities/middlewares')
 const routes = require('express').Router()
 const security = require('../utilities/security')
@@ -7,21 +9,26 @@ routes.post('/create-user', middlewares.validateUser, (req, res) => {
     let user = req.body
     user.password = security.cipher(user.password)
     console.log('password', user.password);
+    let response = new ResponseToSend()
     bd.createUser(user)
         .then(insertId=> {
             user = {...middlewares.createUserDto(user) }
             let token = security.createToken(user)
-            let response = {status:true, data: {id: insertId, ...user, token}}
+            response.successful = true
+            response.data = {id: insertId, ...user, token}
             res.json(response)
         })
         .catch(err => {
-            console.log('mal', err);
-            res.json(err)
+            response.successful = false
+            response.data = new Custom_Exception(err.msg,'ErrorCreateUser', req.url)
+            res.status(400).json(response)
         })
+
 })
 
 routes.post('/login',middlewares.validateLogin, (req,res)=>{
     let user = req.body
+    let response = new ResponseToSend(false,null)
     bd.getUser(user.email)
         .then(result=>{
             if(result.data){
@@ -30,18 +37,21 @@ routes.post('/login',middlewares.validateLogin, (req,res)=>{
                 if (security.decipher(hash) == user.password){
                     middlewares.createUserDto(result.data)
                     let token = security.createToken(result.data)
-                    result.data = {...result.data,token}
-                    res.status(200).json(result);
+                    response.successful = true
+                    response.data = {...result.data,token}
+                    res.status(200).json(response);
                     return
                 }
-                res.status(400).json({status:false, msg:'Contraseña o correo incorrecto'})
+                response.data=new Custom_Exception('Contraseña o correo incorrecto','Credenciales incorrectas',req.url)
+                res.status(400).json(response)
             }else{
-                res.status(200).json({status:false,msg:'No existe el usuario'})
+                response.data = new Custom_Exception('No existe el usuario','ErrorUser',req.url)
+                res.status(200).json(response)
             }
         })
         .catch(err=>{
-            console.log(err);
-            res.status(400).json(err)
+            response.data= new Custom_Exception(err,'ErrorLogin',req.url)
+            res.status(400).json(response)
         })
 })
 

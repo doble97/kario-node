@@ -1,17 +1,17 @@
 const security = require("./security")
-
+const Custom_Exception = require('../exceptions/custon_Exception')
 module.exports = {
     validateUser: (req, res, next) => {
         let user = req.body
         if (!(user.email && user.password && user.name && user.surname)) {
-            return res.status(400).json({ status: false, msg: 'Error faltan parametros' })
+            throw new Custom_Exception('Faltan parametros en la petición enviada','Error Parameter', req.url)
         }
         next()
     },
     validateLogin: (req, res, next) => {
         let user = req.body
         if (!(user.email && user.password)) {
-            return res.status(400).json({ status: false, msg: 'Error, faltan parametros' });
+            throw new Custom_Exception('Error, faltan parametros','Error Parameter',req.url)
         }
         next()
 
