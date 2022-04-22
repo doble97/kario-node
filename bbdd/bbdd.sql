@@ -7,7 +7,7 @@ create table users(
     password varchar(120) not null,
     name varchar(60) not null,
     surname varchar(60) not null, 
-    created_at date not null
+    created_at date default curdate()
 );
 
 create table themes(

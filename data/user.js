@@ -4,7 +4,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             pool.getConnection()
                 .then(conn => {
-                    let query = 'INSERT INTO users(email, password, name, surname, created_at) VALUES (?,?,?,?,now())'
+                    let query = 'INSERT INTO users(email, password, name, surname) VALUES (?,?,?,?)'
                     conn.query(query, [user.email, user.password, user.name, user.surname])
                         .then(row => {
                             console.log('row ',row);

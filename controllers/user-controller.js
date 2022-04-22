@@ -5,6 +5,7 @@ const middlewares = require('../utilities/middlewares')
 const routes = require('express').Router()
 const security = require('../utilities/security')
 //CRUD USER
+//campos necesarios --> 
 routes.post('/create-user', middlewares.validateUser, (req, res) => {
     let user = req.body
     user.password = security.cipher(user.password)
