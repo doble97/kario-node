@@ -18,7 +18,7 @@ create table preferences(
     fk_user int,
     fk_language int,
     learn_words int not null default 5,
-    constraint FK_USER_REFERENCES foreign key(fk_user) references users(id),
+    constraint FK_USER_REFERENCES foreign key(fk_user) references users(id) on delete cascade,
     constraint FK_LANGUAGES_REFERENCES foreign key(fk_language) references languages(id),
     PRIMARY KEY(fk_user,fk_language)
 );
@@ -50,9 +50,11 @@ create table sentences(
     primary KEY(sentence, fk_word)
 );
 
-
-
 insert into languages(name) values('English');
 insert into languages(name) values('Spanish');
 insert into languages(name) values('French');
 insert into languages(name) values('German');
+
+CREATE TRIGGER user_preferences_triger AFTER INSERT ON users
+FOR EACH ROW
+INSERT INTO preferences(fk_user, fk_language) values(new.id, 1);

@@ -17,6 +17,7 @@ module.exports = {
                     conn.release()
                 })
                 .catch(err => {
+                    console.log(err);
                     reject({ status: false, msg: 'Error de conexion' })
                 })
         })
